@@ -1,6 +1,18 @@
 import React, { useEffect } from 'react';
-import { Grid, Container, Box, Button, makeStyles } from '@material-ui/core';
+import {
+  Grid,
+  Container,
+  Box,
+  Button,
+  makeStyles,
+  CircularProgress,
+} from '@material-ui/core';
 import logo from '../logo.png';
+import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { IAppState } from '../store/reducers';
+import { resendEmail } from '../store/actions';
+import { getResendEmailPending } from '../store/selectors';
 
 const useStyles = makeStyles({
   body: {
@@ -8,13 +20,13 @@ const useStyles = makeStyles({
   },
   button: {
     margin: '20px 0 0 0',
-    background: 'black',
+    background: '#333',
     border: 0,
     borderRadius: 6,
     color: 'white',
     height: 30,
     padding: '0 30px',
-    width: '100%',
+    width: '200px',
     textTransform: 'capitalize',
   },
   welcomeText: {
@@ -22,15 +34,23 @@ const useStyles = makeStyles({
   },
 });
 
-export default function VerificationPage() {
+function VerificationPage({
+  resendEmail,
+  getResendEmailPending,
+}: {
+  resendEmail: Function;
+  getResendEmailPending?: boolean;
+}) {
   const classes = useStyles();
   useEffect(() => {
+    document.title = 'Verify';
     // Update the document title using the browser API
     document.body.classList.add('linear-background');
     return function cleanup() {
       document.body.classList.remove('linear-background');
     };
   });
+
   return (
     <React.Fragment>
       <Container maxWidth="sm" className={classes.body}>
@@ -52,10 +72,30 @@ export default function VerificationPage() {
         </Box>
         <Grid container justify="center">
           <Box textAlign="center">
-            <Button className={classes.button}>Create New Account</Button>
+            <Button
+              onClick={() => resendEmail()}
+              type="button"
+              className={classes.button}
+              disabled={getResendEmailPending === true}
+            >
+              {getResendEmailPending !== true && 'Resend the Email'}
+              {getResendEmailPending === true && <CircularProgress size={18} />}
+            </Button>
           </Box>
         </Grid>
       </Container>
     </React.Fragment>
   );
 }
+
+export const mapStateToProps = (state: IAppState) => ({
+  getResendEmailPending: getResendEmailPending(state),
+});
+
+export const mapDispatchToProps = (dispatch: any, ownProps: any) => ({
+  resendEmail: (data: any) => dispatch(resendEmail(ownProps)),
+});
+
+export default withRouter(
+  connect(mapStateToProps, mapDispatchToProps)(VerificationPage)
+);

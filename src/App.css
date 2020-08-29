@@ -1,6 +1,6 @@
-html,
-body {
+html {
   min-width: 320px;
+  padding: 0 15px;
 }
 .App {
   min-height: calc(100vh);

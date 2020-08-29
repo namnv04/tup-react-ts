@@ -4,7 +4,6 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Link,
   Redirect,
 } from 'react-router-dom';
 import CreateAccountPage from './pages/CreateAccountPage';
@@ -39,15 +38,6 @@ function App() {
           </Switch>
         </div>
       </div>
-      <hr />
-      <ul>
-        <li>
-          <Link to="/create-account">create-account</Link>
-        </li>
-        <li>
-          <Link to="/verify">verify</Link>
-        </li>
-      </ul>
     </Router>
   );
 }
